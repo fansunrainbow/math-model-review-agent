@@ -1,0 +1,66 @@
+# Python environments and bytecode
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
+
+# Generated review/parser outputs
+review_pdf_cache/
+reviews_v2/
+reviews_v2_work/
+review_report*.md
+04c_consolidated_issues*.json
+04d_cross_section_fact_audit*.json
+04e_final_issues*.json
+04e2_issue_policy*.json
+04e3_parser_artifact_guard*.json
+04f_rubric_experience*.json
+05_retrieval*.json
+06_report_fact_audit*.json
+06_report_meta*.json
+
+# Generated corpus intermediates and vector database
+parsed_all/
+processed_all/
+database/chroma/
+
+# Local embedding/model weights (download separately)
+models/
+
+# Local paper corpus and test documents: keep private/local by default
+CUMCM_20??_?/
+test*.pdf
+

@@ -1,0 +1,683 @@
+{
+  "metadata": {
+    "name": "Math Modeling Paper Review Rubric",
+    "version": "1.0",
+    "language": "zh-CN",
+    "status": "draft_v1",
+    "purpose": "用于数学建模竞赛论文评审 Agent 的结构化评审框架。",
+    "official_status": "unofficial",
+    "official_status_note": "本 Rubric 不是全国大学生数学建模竞赛官方评分细则，不用于宣称官方分数；它用于统一 Agent 的问题分类、严重程度判断和修改建议。",
+    "scoring_policy": {
+      "numeric_score_enabled": false,
+      "reason": "V1 暂不输出百分制或具体分数，先保证评价维度和严重程度稳定。",
+      "allowed_status": [
+        "excellent",
+        "good",
+        "partial",
+        "weak",
+        "not_applicable"
+      ]
+    },
+    "severity_levels": {
+      "high": {
+        "priority": "P0",
+        "definition": "影响模型正确性、数学可行性、核心结论可信度，或导致核心模型无法被严格理解/复现的问题。"
+      },
+      "medium": {
+        "priority": "P1",
+        "definition": "不一定使模型错误，但明显影响参数可信度、模型完整性、求解可复现性、验证充分性或结果解释质量。"
+      },
+      "low": {
+        "priority": "P2",
+        "definition": "主要影响论文表达、组织、呈现和阅读效率，不直接改变模型正确性。"
+      }
+    },
+    "global_principles": [
+      "所有负面判断必须有论文正文证据。",
+      "缺失类问题只有在检查范围足够完整时才能成立。",
+      "不得仅凭章节篇幅或字符数判断质量。",
+      "不得把优秀论文案例中的具体模型、参数或数字机械套用到当前论文。",
+      "优先级原则：数学正确性 > 模型完整性 > 参数与可复现性 > 验证可信度 > 结果解释 > 表达呈现。",
+      "没有正式评分标准支撑时，不输出伪精确百分制成绩。"
+    ]
+  },
+  "dimensions": [
+    {
+      "rubric_id": "R01",
+      "name": "摘要",
+      "category": "writing_and_summary",
+      "description": "检查摘要是否用极少篇幅完整交代问题、方法、关键结果与结论，而不是只描述研究流程。",
+      "target_section_types": [
+        "abstract"
+      ],
+      "checks": [
+        "是否说明研究对象或题目核心任务。",
+        "是否分别概括主要问题采用的模型或方法。",
+        "是否给出关键定量结果，而不仅是“效果较好”。",
+        "是否说明模型验证或可靠性结论。",
+        "是否避免大量背景、公式推导和无信息量套话。",
+        "摘要中的模型、数字和正文是否一致。"
+      ],
+      "critical_failures": [
+        "摘要中的核心结论或关键数字与正文矛盾。",
+        "摘要声称完成了某模型/验证，但正文中不存在对应内容。"
+      ],
+      "common_issues": [
+        "只有方法名称，没有关键结果。",
+        "大量使用“较好、有效、合理”等定性词但没有数字支撑。",
+        "只按问题一、问题二罗列流程，没有总结核心发现。",
+        "摘要与正文最终模型版本不一致。"
+      ],
+      "good_signals": [
+        "每个主要任务都有“方法 + 关键结果”。",
+        "关键结果包含具体数值、误差、提升幅度或最优方案。",
+        "末尾能概括模型价值、适用性或验证结果。"
+      ],
+      "excellence_signals": [
+        "高度压缩但信息密度高。",
+        "关键方法与结果之间因果关系清晰。",
+        "定量结果能够直接支撑结论。"
+      ],
+      "severity_rules": {
+        "high": "摘要与正文存在事实冲突或虚假宣称。",
+        "medium": "核心方法或关键结果明显缺失，导致摘要无法准确代表全文。",
+        "low": "表达冗长、结构松散、信息密度不足。"
+      },
+      "retrieval_queries": [
+        "优秀数学建模论文 摘要 方法 关键结果 定量结论",
+        "摘要 模型 方法 结果 验证 高信息密度"
+      ],
+      "experience_tags": [
+        "abstract_structure",
+        "quantitative_summary",
+        "method_result_pairing"
+      ]
+    },
+    {
+      "rubric_id": "R02",
+      "name": "问题重述与问题分析",
+      "category": "problem_understanding",
+      "description": "检查作者是否准确理解题意，并将自然语言任务转化为可建模的问题结构。",
+      "target_section_types": [
+        "problem_statement",
+        "analysis",
+        "background"
+      ],
+      "checks": [
+        "问题重述是否忠于题意且没有擅自改变条件。",
+        "是否识别每一问的输入、输出、决策目标和约束。",
+        "是否分析各小问之间的联系和递进关系。",
+        "是否说明建模难点及对应解决思路。",
+        "是否避免简单复制题面。"
+      ],
+      "critical_failures": [
+        "错误理解题意或遗漏关键约束。",
+        "模型优化目标与题目实际目标不一致。"
+      ],
+      "common_issues": [
+        "问题重述基本照抄题面。",
+        "问题分析只是提前宣布要用某模型，没有解释为什么。",
+        "没有说明多问之间的信息传递或递进关系。"
+      ],
+      "good_signals": [
+        "将自然语言要求拆成清晰的数学任务。",
+        "明确识别关键变量、约束与不确定性。",
+        "分析内容能够自然引出后续模型。"
+      ],
+      "excellence_signals": [
+        "对题目核心矛盾和难点有准确抽象。",
+        "问题分析直接形成后续技术路线。"
+      ],
+      "severity_rules": {
+        "high": "误读题意、漏掉关键任务或改变关键约束。",
+        "medium": "分析不足导致模型选择缺乏逻辑依据。",
+        "low": "重述冗长或与题面重复较多。"
+      },
+      "retrieval_queries": [
+        "数学建模 问题分析 建模难点 技术路线",
+        "问题重述 输入 输出 约束 目标"
+      ],
+      "experience_tags": [
+        "problem_decomposition",
+        "task_abstraction",
+        "technical_route"
+      ]
+    },
+    {
+      "rubric_id": "R03",
+      "name": "模型假设",
+      "category": "assumption",
+      "description": "检查假设是否必要、合理、可解释，并与后续模型真正对应。",
+      "target_section_types": [
+        "assumption"
+      ],
+      "checks": [
+        "每条假设是否服务于后续模型。",
+        "是否说明忽略因素的合理性。",
+        "假设是否与题目条件或数据冲突。",
+        "关键随机性、独立性、稳定性等假设是否明确。",
+        "是否区分题目给定事实、数据事实与作者假设。"
+      ],
+      "critical_failures": [
+        "假设与题目明确条件冲突。",
+        "关键假设会直接改变问题性质却没有说明。"
+      ],
+      "common_issues": [
+        "使用“假设数据真实可靠”等空泛模板。",
+        "假设在正文中从未使用。",
+        "模型依赖重要统计假设但没有说明。"
+      ],
+      "good_signals": [
+        "假设数量适中且可追溯到具体模型环节。",
+        "对简化带来的影响有解释。",
+        "关键假设在验证或敏感性分析中被检查。"
+      ],
+      "excellence_signals": [
+        "对强假设进行验证或鲁棒性讨论。",
+        "明确说明假设适用边界。"
+      ],
+      "severity_rules": {
+        "high": "不合理假设直接导致模型错误或与题意冲突。",
+        "medium": "重要假设未说明或缺乏合理性解释。",
+        "low": "存在冗余、模板化假设。"
+      },
+      "retrieval_queries": [
+        "数学建模 模型假设 合理性 简化 条件",
+        "假设 独立性 稳定性 随机性 合理性"
+      ],
+      "experience_tags": [
+        "assumption_justification",
+        "assumption_validation",
+        "model_simplification"
+      ]
+    },
+    {
+      "rubric_id": "R04",
+      "name": "符号与变量定义",
+      "category": "notation",
+      "description": "检查公式、变量、参数、下标和集合是否定义完整且全文一致。",
+      "target_section_types": [
+        "notation",
+        "model_building",
+        "model_detail"
+      ],
+      "checks": [
+        "核心决策变量是否明确。",
+        "参数、集合、下标是否有定义。",
+        "符号表与正文实际符号是否一致。",
+        "同一符号是否被重复用于不同含义。",
+        "单位、取值域、索引范围是否在需要时说明。"
+      ],
+      "critical_failures": [
+        "核心决策变量未定义导致模型无法理解。",
+        "符号冲突导致公式产生歧义。"
+      ],
+      "common_issues": [
+        "符号表有符号但正文不用。",
+        "正文出现新符号但符号表没有。",
+        "参数有含义但无单位、范围或索引说明。"
+      ],
+      "good_signals": [
+        "变量、参数、集合、下标定义清楚。",
+        "符号首次出现处能够直接理解。",
+        "符号体系简洁且全文一致。"
+      ],
+      "excellence_signals": [
+        "符号定义同时给出取值域、单位或来源。",
+        "复杂模型通过集合/索引定义保持公式简洁。"
+      ],
+      "severity_rules": {
+        "high": "核心变量缺失或符号冲突影响模型正确理解。",
+        "medium": "多个关键参数/索引定义不完整，影响复现。",
+        "low": "少量非核心符号定义位置不佳或表格不统一。"
+      },
+      "retrieval_queries": [
+        "数学建模 符号说明 决策变量 参数 集合 下标",
+        "符号定义 取值范围 单位 参数说明"
+      ],
+      "experience_tags": [
+        "notation_table",
+        "variable_definition",
+        "index_set_design"
+      ]
+    },
+    {
+      "rubric_id": "R05",
+      "name": "数据处理与参数依据",
+      "category": "data_and_parameters",
+      "description": "检查数据来源、清洗、特征构造、参数估计和场景参数是否具有清晰依据。",
+      "target_section_types": [
+        "preprocessing",
+        "model_solving",
+        "notation",
+        "sensitivity"
+      ],
+      "checks": [
+        "数据来源是否明确且可追溯。",
+        "缺失值、异常值、重复值等处理是否说明。",
+        "预处理方法是否与数据特征相匹配。",
+        "关键参数是否给出来源、估计方法、取值或取值范围。",
+        "人为设定参数是否说明依据。",
+        "关键参数是否进行敏感性或稳健性检查。"
+      ],
+      "critical_failures": [
+        "核心结论高度依赖任意设定的关键参数且没有任何依据。",
+        "数据处理造成明显信息泄漏或逻辑错误。"
+      ],
+      "common_issues": [
+        "只写“对数据进行预处理”但没有步骤。",
+        "参数直接给数值，没有来源。",
+        "参数称为“经验值”但没有文献、数据或敏感性支撑。",
+        "关键参数没有进入敏感性分析。"
+      ],
+      "good_signals": [
+        "数据处理流程可复现。",
+        "参数来源分为题面、数据估计、文献、合理假设等类别。",
+        "重要参数给出估计方法和范围。"
+      ],
+      "excellence_signals": [
+        "参数估计与敏感性分析形成闭环。",
+        "不同数据证据等级被明确区分。",
+        "处理前后给出定量对比或诊断。"
+      ],
+      "severity_rules": {
+        "high": "核心参数无依据且直接决定主要结论，或数据处理存在实质性错误。",
+        "medium": "参数依据、校准方法或关键敏感性分析不足。",
+        "low": "部分非核心参数说明不够集中或格式不统一。"
+      },
+      "retrieval_queries": [
+        "数学建模 参数校准 参数来源 敏感性分析",
+        "数据预处理 异常值 缺失值 参数估计",
+        "参数取值范围 文献依据 数据估计"
+      ],
+      "experience_tags": [
+        "parameter_calibration",
+        "data_cleaning",
+        "parameter_provenance",
+        "sensitivity_coverage"
+      ]
+    },
+    {
+      "rubric_id": "R06",
+      "name": "模型选择依据",
+      "category": "model_selection",
+      "description": "检查模型是否根据问题特征和候选方案进行选择，而不是直接宣布使用某算法。",
+      "target_section_types": [
+        "model_selection",
+        "model_idea",
+        "analysis"
+      ],
+      "checks": [
+        "是否说明为什么该模型适合当前任务。",
+        "是否结合数据规模、变量类型、约束结构、不确定性等特征。",
+        "存在多个合理候选模型时是否进行比较。",
+        "模型比较是否使用统一评价指标或实验条件。",
+        "最终选择是否由定量或逻辑证据支撑。"
+      ],
+      "critical_failures": [
+        "所选模型与问题结构明显不匹配。",
+        "模型的基本适用条件不满足且未处理。"
+      ],
+      "common_issues": [
+        "“本文采用 XGBoost/遗传算法/神经网络”后直接进入建模。",
+        "只介绍模型优点，不说明与本题关系。",
+        "候选模型比较只给主观评价。"
+      ],
+      "good_signals": [
+        "从问题特征推导模型需求。",
+        "给出候选模型及比较指标。",
+        "用误差、AIC、R²、RMSE、复杂度等指标支持选择。"
+      ],
+      "excellence_signals": [
+        "模型选择同时考虑预测性能、解释性、稳定性和计算成本。",
+        "候选模型在统一条件下进行定量比较。"
+      ],
+      "severity_rules": {
+        "high": "模型不适用导致核心结论不可靠。",
+        "medium": "模型基本可用但选择依据不足。",
+        "low": "选择依据存在但表达不够集中。"
+      },
+      "retrieval_queries": [
+        "模型比较 模型选择 AIC RMSE R2 数学建模",
+        "候选模型 评价指标 模型选择依据"
+      ],
+      "experience_tags": [
+        "candidate_model_comparison",
+        "metric_based_selection",
+        "model_applicability"
+      ]
+    },
+    {
+      "rubric_id": "R07",
+      "name": "模型建立完整性",
+      "category": "model_building",
+      "description": "检查模型的决策变量、目标函数、约束条件、数学关系和实际含义是否完整且一致。",
+      "target_section_types": [
+        "model_building",
+        "model_detail",
+        "model_idea"
+      ],
+      "checks": [
+        "决策变量是否正式定义。",
+        "目标函数是否明确且与题目目标一致。",
+        "必要约束是否完整。",
+        "共享资源、总量限制、流量守恒等聚合约束是否遗漏。",
+        "变量域、整数性、非负性等是否说明。",
+        "模型中的每个关键公式是否解释实际含义。",
+        "多个子模型之间的输入输出是否衔接。"
+      ],
+      "critical_failures": [
+        "遗漏必要约束导致不可行解或错误解。",
+        "目标函数与题目目标不一致。",
+        "模型数学关系存在明显逻辑矛盾。",
+        "关键变量/状态/转移定义缺失导致模型无法成立。"
+      ],
+      "common_issues": [
+        "只有公式，没有解释。",
+        "文字描述了优化目标但没有正式数学表达。",
+        "只限制单个变量，没有考虑总资源限制。",
+        "模型各部分独立存在但没有连接关系。"
+      ],
+      "good_signals": [
+        "决策变量—目标函数—约束条件结构完整。",
+        "每类约束都有实际意义解释。",
+        "变量域、索引范围和边界条件清楚。"
+      ],
+      "excellence_signals": [
+        "模型结构与实际机制高度对应。",
+        "复杂约束通过辅助变量、集合和分层表达清晰组织。",
+        "能主动检查可行性、守恒关系和边界情况。"
+      ],
+      "severity_rules": {
+        "high": "数学错误、必要约束遗漏、目标函数错误或可行性风险。",
+        "medium": "概念存在但形式化不完整，影响严格理解或复现。",
+        "low": "公式组织和解释可进一步清晰。"
+      },
+      "retrieval_queries": [
+        "优化模型 决策变量 目标函数 约束条件 完整建模",
+        "聚合约束 总量约束 流量守恒 资源限制",
+        "数学建模 模型建立 变量 目标 约束"
+      ],
+      "experience_tags": [
+        "variable_objective_constraint",
+        "constraint_completeness",
+        "aggregate_constraints",
+        "model_linkage"
+      ]
+    },
+    {
+      "rubric_id": "R08",
+      "name": "模型求解与可复现性",
+      "category": "solving_and_reproducibility",
+      "description": "检查模型如何从数学形式转化为可执行求解过程，并确保关键结果可被重复获得。",
+      "target_section_types": [
+        "model_solving",
+        "model_detail",
+        "result"
+      ],
+      "checks": [
+        "是否说明所用算法、求解器或计算方法。",
+        "关键超参数、迭代次数、样本量、随机种子等是否在需要时报告。",
+        "搜索空间、初值、停止条件是否清楚。",
+        "结果如何从算法输出中提取是否说明。",
+        "随机算法是否有重复实验或固定随机机制。",
+        "复杂算法是否给出流程图、伪代码或步骤描述。"
+      ],
+      "critical_failures": [
+        "核心结果无法从论文描述中复现。",
+        "求解过程与所建立模型不一致。"
+      ],
+      "common_issues": [
+        "只写“利用 MATLAB/Python 求解得到结果”。",
+        "没有算法名称或求解器。",
+        "缺少关键搜索范围、迭代次数或停止条件。",
+        "随机模拟结果没有说明统计方式。"
+      ],
+      "good_signals": [
+        "算法、参数、数据输入、输出定义明确。",
+        "复杂求解过程有流程或伪代码。",
+        "关键数值结果能追溯到具体求解步骤。"
+      ],
+      "excellence_signals": [
+        "报告收敛性、计算复杂度或独立算法验证。",
+        "随机算法包含多次运行或稳定性报告。",
+        "附录提供关键代码/伪代码且正文保持清晰。"
+      ],
+      "severity_rules": {
+        "high": "描述不足导致核心模型实际上无法复现或求解过程与模型不符。",
+        "medium": "算法基本明确但关键实现参数、统计方式或结果提取方式不足。",
+        "low": "部分实现细节可进一步集中整理。"
+      },
+      "retrieval_queries": [
+        "数学建模 求解算法 参数设置 迭代次数 可复现性",
+        "优化算法 求解器 收敛 参数 结果提取",
+        "随机模拟 样本量 随机种子 结果统计"
+      ],
+      "experience_tags": [
+        "solver_reporting",
+        "algorithm_parameters",
+        "reproducibility",
+        "convergence_reporting"
+      ]
+    },
+    {
+      "rubric_id": "R09",
+      "name": "结果分析",
+      "category": "result_analysis",
+      "description": "检查结果是否不仅被展示，还被解释、比较并回到实际问题。",
+      "target_section_types": [
+        "result"
+      ],
+      "checks": [
+        "是否给出题目要求的关键结果。",
+        "是否解释结果产生的原因。",
+        "是否与基线、历史值、候选模型或已有方案比较。",
+        "是否报告绝对值之外的相对变化或提升幅度。",
+        "是否讨论异常结果、边界情况或反直觉现象。",
+        "结果是否回答对应小问。"
+      ],
+      "critical_failures": [
+        "结果不能回答题目要求。",
+        "结果与模型或题目条件明显矛盾且未解释。"
+      ],
+      "common_issues": [
+        "只给表格/图，没有分析。",
+        "只说“结果合理”。",
+        "缺少基线对比。",
+        "不同问题的指标口径不一致。"
+      ],
+      "good_signals": [
+        "结果数字、图表和文字分析相互支撑。",
+        "对比基线并说明变化原因。",
+        "结果能够回到实际含义和决策建议。"
+      ],
+      "excellence_signals": [
+        "通过多角度对比解释模型机制。",
+        "不仅报告最优值，还分析结构性规律和权衡关系。"
+      ],
+      "severity_rules": {
+        "high": "结果无法回答题目或存在明显错误。",
+        "medium": "关键比较和解释不足，导致结论说服力下降。",
+        "low": "结果组织、图表说明或文字分析可进一步优化。"
+      },
+      "retrieval_queries": [
+        "数学建模 结果分析 基线对比 相对提升",
+        "模型结果 解释 原因 规律 对比"
+      ],
+      "experience_tags": [
+        "baseline_comparison",
+        "quantitative_interpretation",
+        "result_explanation"
+      ]
+    },
+    {
+      "rubric_id": "R10",
+      "name": "模型验证、误差、灵敏度与鲁棒性",
+      "category": "validation",
+      "description": "检查论文是否用与模型类型匹配的定量方法验证正确性、稳定性和可信度。",
+      "target_section_types": [
+        "validation",
+        "error_analysis",
+        "sensitivity",
+        "evaluation"
+      ],
+      "checks": [
+        "是否存在与模型类型匹配的验证方法。",
+        "预测模型是否报告适当误差指标。",
+        "随机模型是否报告均值、方差、分位数、置信区间等。",
+        "优化模型是否验证可行性、稳定性或与基线/其他算法比较。",
+        "关键参数是否进行敏感性分析。",
+        "是否讨论误差来源和结果鲁棒性。",
+        "验证结果是否真正支持论文声称的可靠性。"
+      ],
+      "critical_failures": [
+        "论文声称模型可靠，但没有任何有效验证。",
+        "验证方式无法检验核心模型结论。",
+        "验证结果明显反驳模型但被忽略。"
+      ],
+      "common_issues": [
+        "只有一张图，没有统计指标。",
+        "只写“误差较小”。",
+        "灵敏度分析选择的参数并非关键参数。",
+        "只做训练集拟合，没有独立验证。",
+        "随机模拟没有报告波动或置信信息。"
+      ],
+      "good_signals": [
+        "验证方法与模型类型相匹配。",
+        "报告误差、区间、分位数、对比结果等定量指标。",
+        "敏感性分析覆盖关键参数。",
+        "解释误差来源。"
+      ],
+      "excellence_signals": [
+        "使用独立方法、交叉验证、理论值/模拟值对照或多算法验证。",
+        "验证、敏感性和鲁棒性形成完整证据链。",
+        "对极端场景和参数扰动给出稳定性结论。"
+      ],
+      "severity_rules": {
+        "high": "核心模型缺少有效验证或验证结果暴露明显错误。",
+        "medium": "验证存在但定量指标、误差分析或关键敏感性覆盖不足。",
+        "low": "验证内容充分但展示方式仍可优化。"
+      },
+      "retrieval_queries": [
+        "数学建模 模型验证 误差分析 灵敏度 鲁棒性",
+        "蒙特卡洛 均值 标准差 置信区间 相对误差",
+        "预测模型 RMSE MAE R2 交叉验证",
+        "优化模型 可行性 稳定性 对比算法"
+      ],
+      "experience_tags": [
+        "validation_design",
+        "error_metrics",
+        "sensitivity_analysis",
+        "robustness_analysis",
+        "monte_carlo_validation"
+      ]
+    },
+    {
+      "rubric_id": "R11",
+      "name": "模型评价与推广",
+      "category": "evaluation_and_generalization",
+      "description": "检查优缺点分析是否真实针对模型，并能说明适用范围、局限和推广方向。",
+      "target_section_types": [
+        "strength",
+        "weakness",
+        "generalization",
+        "evaluation"
+      ],
+      "checks": [
+        "优点是否针对本文模型而非模板语言。",
+        "缺点是否真实存在并解释影响。",
+        "是否说明模型适用条件和边界。",
+        "推广是否指出需要修改哪些变量、参数或机制。",
+        "是否避免把“计算速度快、结果准确”等无证据表述当优点。"
+      ],
+      "critical_failures": [
+        "一般不作为单独 high 问题，除非作者对模型适用范围作出明显错误或误导性宣称。"
+      ],
+      "common_issues": [
+        "优点和缺点完全模板化。",
+        "推广部分只写“可用于其他领域”。",
+        "没有讨论模型依赖的关键假设。"
+      ],
+      "good_signals": [
+        "优缺点与具体模型机制对应。",
+        "明确指出数据、假设、参数或计算复杂度限制。",
+        "推广说明哪些部分可复用、哪些部分需重新估计。"
+      ],
+      "excellence_signals": [
+        "局限性能够与验证结果相互呼应。",
+        "给出具有实际可执行性的推广路径。"
+      ],
+      "severity_rules": {
+        "high": "极少使用；仅限严重误导的适用性宣称。",
+        "medium": "论文需要模型评价但对核心局限完全未讨论。",
+        "low": "优缺点或推广内容模板化、缺少针对性。"
+      },
+      "retrieval_queries": [
+        "数学建模 模型优点 缺点 推广 适用范围",
+        "模型评价 局限性 泛化 推广应用"
+      ],
+      "experience_tags": [
+        "strength_weakness",
+        "limitation_analysis",
+        "generalization"
+      ]
+    },
+    {
+      "rubric_id": "R12",
+      "name": "结论与全文呈现",
+      "category": "conclusion_and_presentation",
+      "description": "检查全文结论是否系统回答各问，并通过合理结构、图表和逻辑组织提升评审阅读效率。",
+      "target_section_types": [
+        "result",
+        "evaluation",
+        "generalization"
+      ],
+      "checks": [
+        "结论是否明确回答每个问题。",
+        "是否系统汇总各问的核心方法与关键结果。",
+        "多问之间的递进关系是否清楚。",
+        "是否避免结论只是重复正文。",
+        "图表是否有标题、编号、单位和必要解释。",
+        "正文结构是否便于快速定位模型、结果和验证。",
+        "技术路线和模型流程是否清晰。"
+      ],
+      "critical_failures": [
+        "结论与正文核心结果矛盾。",
+        "论文最终没有回答题目主要任务。"
+      ],
+      "common_issues": [
+        "结论只有定性描述，没有关键数字。",
+        "各问结果散落，缺少统一总结。",
+        "图表很多但没有分析。",
+        "章节层级和编号混乱。"
+      ],
+      "good_signals": [
+        "结论汇总方法、关键结果和实际含义。",
+        "多问结果可以通过表格或结构化列表快速比较。",
+        "技术路线清晰展示数据输入—模型—结果输出。",
+        "图表承担分析功能而非装饰功能。"
+      ],
+      "excellence_signals": [
+        "结论能够提炼跨问题的统一规律。",
+        "全文结构高度服务于评审快速理解。",
+        "图表、公式和文字之间信息互补。"
+      ],
+      "severity_rules": {
+        "high": "结论与正文冲突或没有回答核心任务。",
+        "medium": "关键结果总结严重不足，影响论文整体说服力。",
+        "low": "主要是结构、图表和呈现优化。"
+      },
+      "retrieval_queries": [
+        "数学建模 结论 总结 各问题 关键结果 递进关系",
+        "技术路线 数据输入 模型 结果输出",
+        "数学建模 图表 结果展示 论文结构"
+      ],
+      "experience_tags": [
+        "conclusion_summary",
+        "cross_problem_linkage",
+        "technical_route",
+        "figure_table_quality"
+      ]
+    }
+  ]
+}
